@@ -1,0 +1,28 @@
+{
+  "name": "labs-guide",
+  "version": "1.0.0",
+  "description": "Surfly Labs project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muodov/labs-guide.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muodov/labs-guide/issues"
+  },
+  "homepage": "https://github.com/muodov/labs-guide#readme",
+  "devDependencies": {
+    "css-loader": "^0.28.2",
+    "intro.js": "^2.5.0",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.0",
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
