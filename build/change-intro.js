@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2674,12 +2674,13 @@ exports.push([module.i, ".introjs-overlay {\n  position: absolute;\n  box-sizing
 /* 7 */,
 /* 8 */,
 /* 9 */,
-/* 10 */
+/* 10 */,
+/* 11 */
 /* unknown exports provided */
 /* all exports used */
-/*!********************!*\
-  !*** ./src/app.js ***!
-  \********************/
+/*!*****************************!*\
+  !*** ./src/change-intro.js ***!
+  \*****************************/
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2693,98 +2694,134 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 let intro = null;
 
+function waitForElement(selector, callback) {
+    if (document.querySelector(selector)) {
+        callback();
+    } else {
+        setTimeout(() => waitForElement(selector, callback), 500);
+    }
+}
+
 function initTutorial() {
-    let searchInput = document.querySelector('#search-field');
-    let menuBar = document.querySelector('.global-nav');
-    let searchBut = document.querySelector('form.search-form input[type=submit]');
+    intro = null;
 
-    let typed = false;
-    let intro2Shown = false;
+    function initIntro() {
+        intro = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_intro_js__["introJs"])();
+        intro.setOptions({
+            positionPrecedence: ['top', 'right', 'left', 'bottom'],
+            showBullets: false,
+            showButtons: true,
+            keyboardNavigation: false,
+            disableInteraction: false,
+            overlayOpacity: 0.4,
+            showStepNumbers: true,
+            hideNext: true,
+            hidePrev: true
+        });
+    }
 
-    intro = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_intro_js__["introJs"])();
-    intro.setOptions({
-        positionPrecedence: ['top', 'right', 'left', 'bottom'],
-        showBullets: false,
-        showButtons: true,
-        keyboardNavigation: false,
-        disableInteraction: false,
-        overlayOpacity: 0.1,
-        showStepNumbers: true,
-        hideNext: true,
-        hidePrev: true,
-        steps: [
+    function firstPage() {
+        initIntro();
+        let startSelector = '.home-intro>a';
+        document.querySelector(startSelector).addEventListener('click', () => {
+            intro.exit();
+            waitForElement('#ask textarea', () => {
+                petitionNamePage();
+            });
+        });
+        intro.addSteps([
             {
                 intro: "Hi! Welcome to the Surfly Tutorials experiment!"
             },
             {
-                intro: "This page is a real content served from the Flickr website. This tutorial is added by Surfly in real time."
+                intro: "This page is a real content served from the Change.org website. This tutorial is added by Surfly in real time."
             },
             {
-                element: menuBar,
-                intro: "We can add some automation to make the tutorial simpler...",
-                // position: 'right'
+                intro: "Change.org is an awesome website where anyone can start a petition and change the world around."
             },
             {
-                element: menuBar,
-                intro: "...or, we can let the user click around to make the process interactive. Isn't it awesome? :)",
-                // position: 'right'
-            },
-            {
-                element: menuBar,
-                intro: "Click the search button to continue!",
+                element: startSelector,
+                intro: "You'll see how easy it is to start a petition. Let's start by clicking this button",
             }
-        ]
-        
-    });
-    intro.onafterchange(el => {
-        if (!typed && el === menuBar) {
-            typed = true;
-            let searchTerm = 'CAPYBARA';
+        ]);
+        intro.start();
+    }
+
+    function petitionNamePage() {
+        initIntro();
+        let nextSelector = '.row.man input.js-save-continue';
+        intro.addSteps([
+            {
+                element: '#ask textarea',
+                intro: "First, your petition needs a name. Make sure it is concise and reflects your intentions"
+            },
+            {
+                element: nextSelector,
+                intro: "Click this button to continue"
+            }
+        ]);
+
+        waitForElement('#ask textarea', () => {
+            document.querySelector(nextSelector).addEventListener('click', () => {
+                intro.exit();
+                waitForElement('#targets-control input', () => {
+                    targetPage();
+                });
+            });
+            let petitionName = 'Make web browsing fun again!';
             function typeChar(el, l) {
                 console.log('typing', l);
-                if (l <= searchTerm.length) {
-                    el.value = searchTerm.slice(0, l);
-                    setTimeout(typeChar, 200, el, l + 1);
+                if (l <= petitionName.length) {
+                    el.value = petitionName.slice(0, l);
+                    setTimeout(typeChar, 100, el, l + 1);
                 }
             }
+            typeChar(document.querySelector('#ask textarea'), 1);
+            intro.start();
+        });
+    }
 
-            typeChar(searchInput, 1);
+    function targetPage() {
+        initIntro();
+        // let nextSelector = '.row.man input.js-save-continue';
+        // intro.addSteps([
+        //     {
+        //         element: '#ask textarea',
+        //         intro: "First, your petition needs a name. Make sure it is concise and reflects your intentions"
+        //     },
+        //     {
+        //         element: nextSelector,
+        //         intro: "Click this button to continue"
+        //     }
+        // ]);
 
-            document.querySelector('form.search-form').addEventListener('submit', () => {
-                console.log('intro2', intro2Shown, intro);
-                if (intro2Shown || !intro) {
-                    return;
-                }
-                intro2Shown = true;
-                
-                function initIntro2() {
-                    let searchResults = document.querySelector('.search-slender-advanced-panel-view');
-                    if (searchResults) {
-                        console.log(searchResults);
+        // waitForElement('#ask textarea', () => {
+        //     document.querySelector(nextSelector).addEventListener('click', () => {
+        //         intro.exit();
+        //         waitForElement('#targets-control input', () => {
+        //             targetPage();
+        //         });
+        //     });
+        //     let petitionName = 'Make web browsing fun again!';
+        //     function typeChar(el, l) {
+        //         console.log('typing', l);
+        //         if (l <= petitionName.length) {
+        //             el.value = petitionName.slice(0, l);
+        //             setTimeout(typeChar, 100, el, l + 1);
+        //         }
+        //     }
+        //     typeChar(document.querySelector('#ask textarea'), 1);
+        //     intro.start();
+        // });
+    }
 
-                        intro.addSteps([
-                            {
-                                element: document.body,
-                                intro: "These capybaras are gorgeous, aren't they?"
-                            },
-                            {
-                                // element: searchResults,
-                                element: document.body,
-                                intro: "Note that this tutorial is completely independent, but all content is served live from Flickr, so the search results are always up-to-date"
-                            }
-                        ]);
-                        intro.goToStep(5).start();
-                    } else {
-                        console.log('waiting for search results...');
-                        setTimeout(initIntro2, 1000);
-                    }
-                }
-                setTimeout(initIntro2, 1000);
-            });
-        }
-    });
-
-    intro.start();
+    if (location.href.indexOf('start-a-petition') >= 0 && location.href.indexOf('step=ask') >= 0) {
+        // petition name
+        petitionNamePage();
+    } else if (document.querySelector('.home-intro>a')) {
+        // start page
+        firstPage();
+    }
 }
 
 if (document.readyState === 'loading') {
@@ -2798,4 +2835,4 @@ if (document.readyState === 'loading') {
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=app.js.map
+//# sourceMappingURL=change-intro.js.map

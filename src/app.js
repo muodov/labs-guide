@@ -13,11 +13,12 @@ function initTutorial() {
 
     intro = introJs();
     intro.setOptions({
+        positionPrecedence: ['top', 'right', 'left', 'bottom'],
         showBullets: false,
         showButtons: true,
         keyboardNavigation: false,
         disableInteraction: false,
-        // overlayOpacity: 0.5
+        overlayOpacity: 0.1,
         showStepNumbers: true,
         hideNext: true,
         hidePrev: true,
@@ -26,17 +27,21 @@ function initTutorial() {
                 intro: "Hi! Welcome to the Surfly Tutorials experiment!"
             },
             {
-                intro: "This page is a real content served from the Flickr website. The tutorial you see here is added by Surfly in real time."
+                intro: "This page is a real content served from the Flickr website. This tutorial is added by Surfly in real time."
             },
             {
                 element: menuBar,
-                intro: "We can add some automation to make the tutorial simpler",
+                intro: "We can add some automation to make the tutorial simpler...",
                 // position: 'right'
             },
             {
                 element: menuBar,
-                intro: "...or, we can let the user click around to make the process interactive. Isn't it awesome? :) Click the search button to continue!",
+                intro: "...or, we can let the user click around to make the process interactive. Isn't it awesome? :)",
                 // position: 'right'
+            },
+            {
+                element: menuBar,
+                intro: "Click the search button to continue!",
             }
         ]
         
@@ -61,10 +66,30 @@ function initTutorial() {
                     return;
                 }
                 intro2Shown = true;
-                intro.addStep({
-                    intro: "Great! Now that we know what capybara looks like, we can continue"
-                });
-                intro.goToStep(4).start();
+                
+                function initIntro2() {
+                    let searchResults = document.querySelector('.search-slender-advanced-panel-view');
+                    if (searchResults) {
+                        console.log(searchResults);
+
+                        intro.addSteps([
+                            {
+                                element: document.body,
+                                intro: "These capybaras are gorgeous, aren't they?"
+                            },
+                            {
+                                // element: searchResults,
+                                element: document.body,
+                                intro: "Note that this tutorial is completely independent, but all content is served live from Flickr, so the search results are always up-to-date"
+                            }
+                        ]);
+                        intro.goToStep(5).start();
+                    } else {
+                        console.log('waiting for search results...');
+                        setTimeout(initIntro2, 1000);
+                    }
+                }
+                setTimeout(initIntro2, 1000);
             });
         }
     });
